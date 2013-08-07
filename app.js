@@ -15,7 +15,7 @@ module.exports = (function (path, value) {
         }
     };
 
-    model = {};
+    //model = {};
 
     var arr = args.split(/[\[\]]+/)
         .filter(function (val) {
@@ -26,14 +26,13 @@ module.exports = (function (path, value) {
 
     arr.reduce(function (prev, val, index, array) {
         // console.log(val)
-        console.log(prev[val]);
+        // console.log(prev[val]);
         if (prev[val] === undefined) {
             if (!isNaN(parseInt(array[index + 1], 10))) {
                 prev[val] = [];
             } else if (typeof array[index + 1] === 'string') {
                 prev[val] = {};
             } else if (array[index + 1] === undefined) {
-                console.log('array?', _.isArray(prev));
                 if (_.isArray(prev)) {
                     var o = {};
                     o[key] = value;
@@ -43,47 +42,17 @@ module.exports = (function (path, value) {
                 }
             }
         } else {
-            console.log('I did not enter', prev[val]);
+            //console.log('I did not enter', prev[val]);
             if (_.isArray(prev) && array[index + 1] === undefined) {
                 prev[val][key] = value;
-                console.log('but I did update the key')
+                //console.log('but I did update the key')
             }
 
         }
 
         return prev[val];
     }, model);
-    // var value;
-    // while (value = arr.shift()) {
-    //     if (model === undefined)
-    //     //ref += '[' + value + ']';
-    //     console.log(ref);
-    //     if (!model[ref]) {
-    //         model[ref] = {};
-    //     }
-    // }
 
     console.log('model', model.days.monday);
-    // var key = arr.pop();
-    // arr.reduce(function (prev, val, index, array) {
-    //     if (prev[val] === undefined) {
-    //         prev[val] = {};
-    //     }
-    //         console.log('prev', prev);
-    //         console.log('val', val);
-    //         console.log('index', index);
-    //         console.log('array', array);
-
-    //         return prev[val];
-    // }, model);
-    //         model[val] = (Number(val)) ? [val] : {};
-
-
-    //         console.log('prev', prev);
-    //         console.log('val', val);
-    //         console.log('index', index);
-    //         console.log('array', array);
-    //         return model[val];
-    //     }, model)
-    // console.log(model);
+    return model;
 })();
