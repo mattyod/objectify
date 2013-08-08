@@ -1,9 +1,23 @@
 var _ = require('underscore');
 
-module.exports = function (path, value, model) {
-    var arr, key;
+module.exports = function (path, value) {
+    var arr, key, val, obj;
 
-    model = _.extend({}, model);
+    var isArrayIndex = function (item) {
+        return !isNaN(parseInt(item), 10);
+    };
+
+    var objType = function (item, parent) {
+        if (!isNaN(parseInt(item), 10)) {
+            return [];
+        }
+        if (!_.isArray(parent)) {
+            return {};
+        }
+        return false;
+    };
+
+    obj = {};
 
     arr = path.split(/[\[\]]+/)
         .filter(function (val) {
@@ -12,30 +26,28 @@ module.exports = function (path, value, model) {
 
     key = arr.pop();
 
-    arr.reduce(function (prev, val, index, array) {
-        var obj = {};
+    if (isArrayIndex(key)) {
+        arr.push(key);
+        key = value;
+        value = false;
+    }
 
-        if (prev[val] === undefined) {
-            if (!isNaN(parseInt(array[index + 1], 10))) {
-                prev[val] = [];
-            } else if (typeof array[index + 1] === 'string') {
-                prev[val] = {};
-            } else if (array[index + 1] === undefined) {
-                if (_.isArray(prev)) {
-                    obj[key] = value;
-                    prev[array[index -1]] = obj;
-                } else {
-                    prev[key] = value;
-                }
-            }
-        } else {
-            if (_.isArray(prev) && array[index + 1] === undefined) {
-                prev[val][key] = value;
+    arr.reduce(function (prev, val, index, array) {
+        var o = {};
+
+        prev[val] = objType(array[index + 1], prev) || objType(array[index + 2], prev);
+
+        if (!prev[val]) {
+            if (value) {
+                o[key] = value;
+                prev[val] = o;
+            } else {
+                prev[val] = key;
             }
         }
 
         return prev[val];
-    }, model);
+    }, obj);
 
-    return model;
+    return obj;
 };
