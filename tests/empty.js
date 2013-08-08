@@ -156,7 +156,7 @@ module.exports = {
             }
         };
 
-        //_.deepExtend(model, objectify('days[tuesday][0][time]', value));
+        _.deepExtend(model, objectify('days[tuesday][0][time]', value));
 
         test.deepEqual(model, { days: {
             monday: [ { op: 'ON' } ],
